@@ -12,12 +12,23 @@ function run() {
   });
 
   let totalCalories = 0;
-  let result = 0;
+  let results = [];
+
+  const sorter = (a, b) => a - b;
+
   file.on("line", (line) => {
     if (line === "") {
-      if (totalCalories > result) {
-        result = totalCalories;
-        console.log(`Result: ${result}`);
+      // If we have less than three, just push it and sort
+      if (results.length < 3) {
+        results.push(Number(totalCalories));
+        results.sort(sorter);
+      } else if (totalCalories > results[0]) {
+        // If this elf has more than the current 3rd highest
+        // replace the 3rd and sort
+        results[0] = Number(totalCalories);
+        results.sort(sorter);
+        // The final log will be the answer
+        console.log(results.reduce((acc, a) => acc + a));
       }
       totalCalories = 0;
     } else {
