@@ -33,6 +33,65 @@ const selfMap = {
   Z: 3,
 };
 
+const selfStrategyMap = {
+  Lose: "X",
+  Draw: "Y",
+  Win: "Z",
+};
+
+let partTwoTotal = 0;
+
+function partTwo() {
+  const file = getFile();
+
+  file.on("line", (line) => {
+    const [opp, self] = line.trim().split(" ");
+
+    switch (opp) {
+      case opponentMap.Rock:
+        switch (self) {
+          case selfStrategyMap.Draw:
+            partTwoTotal += draw + selfMap[selfMap.Rock];
+            break;
+          case selfStrategyMap.Win:
+            partTwoTotal += win + selfMap[selfMap.Paper];
+            break;
+          case selfStrategyMap.Lose:
+            partTwoTotal += selfMap[selfMap.Scissors];
+            break;
+        }
+        break;
+      case opponentMap.Paper:
+        switch (self) {
+          case selfStrategyMap.Draw:
+            partTwoTotal += draw + selfMap[selfMap.Paper];
+            break;
+          case selfStrategyMap.Win:
+            partTwoTotal += win + selfMap[selfMap.Scissors];
+            break;
+          case selfStrategyMap.Lose:
+            partTwoTotal += selfMap[selfMap.Rock];
+            break;
+        }
+        break;
+      case opponentMap.Scissors:
+        switch (self) {
+          case selfStrategyMap.Draw:
+            partTwoTotal += draw + selfMap[selfMap.Scissors];
+            break;
+          case selfStrategyMap.Win:
+            partTwoTotal += win + selfMap[selfMap.Rock];
+            break;
+          case selfStrategyMap.Lose:
+            partTwoTotal += selfMap[selfMap.Paper];
+            break;
+        }
+        break;
+    }
+    console.log(partTwoTotal);
+  });
+}
+
 let totalScore = 0;
 
 function partOne() {
@@ -86,4 +145,4 @@ function partOne() {
   });
 }
 
-partOne();
+partTwo();
