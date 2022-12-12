@@ -119,7 +119,7 @@ async function partTwo() {
   console.log(
     diffs
       .sort((a, b) => a - b)
-      .filter((size) => size + currentDiskSpace >= requiredUnusedSpaced)
+      .filter((size) => size + currentDiskSpace >= requiredUnusedSpaced)[0]
   );
 }
 
@@ -140,4 +140,5 @@ async function partOne() {
   console.log(dirSum);
 }
 
+partOne();
 partTwo();
