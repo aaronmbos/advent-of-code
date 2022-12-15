@@ -35,9 +35,57 @@ function handleAction(direction, count, head, tail) {
 function moveTail(head, tail) {
   // this is incorrect
   let xDelta = head.current[0] - tail.current[0];
-  xDelta = xDelta === 0 ? 0 : xDelta - 1;
   let yDelta = head.current[1] - tail.current[1];
-  yDelta = yDelta === 0 ? 0 : yDelta - 1;
+
+  if (xDelta > 0 && yDelta < 0) {
+    // down and to right
+    if (xDelta > 1) {
+      xDelta -= 1;
+    }
+    if (yDelta < -1) {
+      yDelta += 1;
+    }
+  } else if (xDelta < 0 && yDelta > 0) {
+    // up and to left
+    if (xDelta < -1) {
+      xDelta += 1;
+    }
+    if (yDelta > 1) {
+      yDelta -= 1;
+    }
+  } else if (yDelta < 0 && xDelta < 0) {
+    // down and to left
+    if (xDelta < -1) {
+      xDelta += 1;
+    }
+    if (yDelta < -1) {
+      yDelta += 1;
+    }
+  } else if (yDelta > 0 && xDelta > 0) {
+    // up and to right
+    if (xDelta > 1) {
+      xDelta -= 1;
+    }
+    if (yDelta > 1) {
+      yDelta -= 1;
+    }
+  } else if (yDelta > 0 && xDelta === 0) {
+    // up
+    yDelta -= 1;
+  } else if (yDelta < 0 && xDelta === 0) {
+    // down
+    yDelta += 1;
+  } else if (xDelta > 0 && yDelta === 0) {
+    // right
+    xDelta -= 1;
+  } else if (xDelta < 0 && yDelta === 0) {
+    // left
+    xDelta += 1;
+  } else {
+    console.log("huh", xDelta, yDelta);
+    throw new Error("Unexpected movement");
+  }
+
   tail.current = [tail.current[0] + xDelta, tail.current[1] + yDelta];
 
   tail.history.push(tail.current);
@@ -92,6 +140,7 @@ async function partOne() {
     handleAction(action.direction, action.count, head, tail);
   }
   console.log(tail);
+  console.log(head);
   console.log(tail.history.length);
 }
 
