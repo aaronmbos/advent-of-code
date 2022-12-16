@@ -33,7 +33,6 @@ function handleAction(direction, count, head, tail) {
 }
 
 function moveTail(head, tail) {
-  // this is incorrect
   let xDelta = head.current[0] - tail.current[0];
   let yDelta = head.current[1] - tail.current[1];
 
@@ -87,9 +86,13 @@ function moveTail(head, tail) {
   }
 
   tail.current = [tail.current[0] + xDelta, tail.current[1] + yDelta];
-
-  tail.history.push(tail.current);
-  //console.log("tail", tail);
+  if (
+    !tail.history.find((point) => {
+      return point[0] === tail.current[0] && point[1] === tail.current[1];
+    })
+  ) {
+    tail.history.push(tail.current);
+  }
 }
 
 function moveHead(direction, head) {
@@ -110,7 +113,6 @@ function moveHead(direction, head) {
       throw new Error("Unknown head direction");
   }
   head.history.push(head.current);
-  //console.log("head", head);
 }
 
 function areTouching(head, tail) {
