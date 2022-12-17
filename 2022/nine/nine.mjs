@@ -20,18 +20,18 @@ function getActions(lines) {
   });
 }
 
-function handleAction(direction, count, head, tail) {
-  // if H is directly up, down, left, or right then T moves one step in that direction
-  // if H is in different row or column then T moves one step diagnally
+function handleAction(direction, count, rope) {
   for (let idx = 1; idx <= count; idx++) {
-    moveHead(direction, head);
-    if (areTouching(head, tail)) {
-      continue;
+    moveHead(direction, rope[0]);
+    for (let ropeIdx = 1; ropeIdx < rope.length; ropeIdx++) {
+      if (areTouching(rope[ropeIdx - 1], rope[ropeIdx])) {
+        break;
+      }
+      moveTail(rope[ropeIdx - 1], rope[ropeIdx]);
     }
-    moveTail(head, tail);
   }
 }
-let tailPlaceCount = 0;
+
 function moveTail(head, tail) {
   const xDelta = head.current[0] - tail.current[0];
   const yDelta = head.current[1] - tail.current[1];
@@ -99,23 +99,22 @@ function areTouching(head, tail) {
   return true;
 }
 
-async function partOne() {
+async function run(knots) {
   const lines = await getFileLines();
   const actions = getActions(lines);
 
-  let head = {
-    current: [0, 0],
-    history: [[0, 0]],
-  };
-
-  let tail = {
-    current: [0, 0],
-    history: [[0, 0]],
-  };
-  for (const action of actions) {
-    handleAction(action.direction, action.count, head, tail);
+  let rope = [];
+  for (let i = 0; i < knots; i++) {
+    rope.push({
+      current: [0, 0],
+      history: [[0, 0]],
+    });
   }
-  console.log(tail.history.length);
+  for (const action of actions) {
+    handleAction(action.direction, action.count, rope);
+  }
+  console.log(rope[knots - 1].history.length);
 }
 
-partOne();
+await run(2); // part 1
+await run(10); // part 2
