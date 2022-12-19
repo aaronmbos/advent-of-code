@@ -28,7 +28,6 @@ function partTwo(lines) {
   let spriteCenterIdx = 1;
   let crt = [[]];
   let crtRow = 0;
-  let register = 1;
 
   for (const signal of signals) {
     for (let idx = 0; idx < signal.cycles; idx++) {
@@ -46,7 +45,6 @@ function partTwo(lines) {
       }
     }
     spriteCenterIdx += signal.value;
-    register += signal.value;
   }
 
   printCrt(crt);
