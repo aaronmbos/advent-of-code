@@ -121,44 +121,50 @@ async function partTwo() {
   // Iterate through gears to see if there are adjacent numbers
   for (const [row, gears] of gearMap) {
     gears.forEach((gear) => {
-      // Check beside
-      const [left, right] = sameRowGearCheck(gear, numberMap.get(row));
-      if (left > 0 && right > 0) {
-        gearRatios.push(left * right);
-        return;
-      }
-      // Check above
-      const numberAbove = checkGearAboveOrBelow(gear, numberMap.get(row - 1));
-      // Check below
-      const numberBelow = checkGearAboveOrBelow(gear, numberMap.get(row + 1));
+      //console.log(gear);
+      const adjacentNums = [];
+      const left = numberMap
+        .get(row)
+        .find((num) => num.maxCol === gear.colIdx - 1);
 
-      if (numberAbove > 0 && numberBelow > 0) {
-        gearRatios.push(numberAbove * numberBelow);
-        return;
+      const right = numberMap
+        .get(row)
+        .find((num) => num.minCol === gear.colIdx + 1);
+
+      const above = numberMap.get(row - 1).find((num) => {
+        //0123456
+        //  789
+        // x
+        return num.minCol - 1 <= gear.colIdx && num.maxCol + 1 >= gear.colIdx;
+      });
+
+      const below = numberMap.get(row + 1).find((num) => {
+        //0123456
+        //     x
+        //  789
+        return num.minCol - 1 <= gear.colIdx && num.maxCol + 1 >= gear.colIdx;
+      });
+
+      if (left) {
+        adjacentNums.push(left.val);
+      }
+      if (right) {
+        adjacentNums.push(right.val);
+      }
+      if (above) {
+        adjacentNums.push(above.val);
+      }
+      if (below) {
+        adjacentNums.push(below.val);
       }
 
-      if (left > 0) {
-        if (numberAbove > 0) {
-          gearRatios.push(left * numberAbove);
-          return;
-        }
-        if (numberBelow > 0) {
-          gearRatios.push(left * numberBelow);
-          return;
-        }
-      }
-      if (right > 0) {
-        if (numberAbove > 0) {
-          gearRatios.push(right * numberAbove);
-          return;
-        }
-        if (numberBelow > 0) {
-          gearRatios.push(right * numberBelow);
-          return;
-        }
+      //gearRatios.push(adjacentNums.reduce((a, b) => a * b, 1));
+      if (adjacentNums.length === 2) {
+        gearRatios.push(adjacentNums.reduce((a, b) => a * b, 1));
       }
     });
   }
+  //console.log(numberMap);
   //console.table(gearRatios);
   console.log(gearRatios.reduce((a, b) => a + b, 0));
 }
@@ -183,29 +189,6 @@ function createNumberEntry(tmpNumber) {
   };
 }
 
-function checkGearAboveOrBelow(gear, numbers) {
-  if (!numbers) {
-    return 0;
-  }
-
-  // 012345
-  //   123
-  //    x
-  //  456
-  number = 0;
-  numbers.forEach((num) => {
-    for (let idx = num.minCol - 1; idx <= num.maxCol + 1; idx++) {
-      if (gear.colIdx === idx) {
-        //console.log(num.val);
-        number = num.val;
-        return;
-      }
-    }
-  });
-
-  return number;
-}
-
 function checkAboveOrBelow(num, symbols) {
   if (!symbols) {
     return false;
@@ -218,19 +201,6 @@ function checkAboveOrBelow(num, symbols) {
   }
 
   return false;
-}
-
-function sameRowGearCheck(gear, numbers) {
-  if (!numbers) {
-    return [0, 0];
-  }
-
-  // 0123456
-  //  28*123
-  const left = numbers.find((num) => num.maxCol === gear.colIdx - 1);
-  const right = numbers.find((num) => num.minCol === gear.colIdx + 1);
-
-  return [left?.val ?? 0, right?.val ?? 0];
 }
 
 function sameRowCheck(num, symbols) {
